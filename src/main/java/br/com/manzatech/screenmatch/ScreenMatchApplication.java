@@ -9,9 +9,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import br.com.manzatech.screenmatch.models.DadosEpisodio;
 import br.com.manzatech.screenmatch.models.DadosSerie;
 import br.com.manzatech.screenmatch.services.ConsumoAPI;
 import br.com.manzatech.screenmatch.services.ConversorDados;
+import br.com.manzatech.screenmatch.services.RecordDeserializer;
 
 @SpringBootApplication
 public class ScreenMatchApplication implements CommandLineRunner {
@@ -30,11 +32,25 @@ public class ScreenMatchApplication implements CommandLineRunner {
 		// System.out.println(result);
 		
 		
+		var des = new RecordDeserializer(DadosEpisodio.class);
 		ConversorDados conversorDados = new ConversorDados();
+		conversorDados.addDeserializerForClass(DadosEpisodio.class, des);
+		conversorDados.register();
+
 		var results = conversorDados.obterJsonFromPath(result, "results");
 		var lista = conversorDados.obterListaDados(results.toString(), DadosSerie.class);
 
-		System.out.println(lista);
+		des.addDynamicValue("numero", 1);
+		var serie = lista.get(0);
+		var episode_data = consumoAPI.obterDados("tv/%s/season/%d/episode/%d".formatted(serie.id(), 1, 1));
+		var episode = conversorDados.obterDados(episode_data, DadosEpisodio.class);
+		System.out.println(episode);
+		System.out.println();
+
+		des.addDynamicValue("numero", 2);
+		episode_data = consumoAPI.obterDados("tv/%s/season/%d/episode/%d".formatted(serie.id(), 1, 2));
+		episode = conversorDados.obterDados(episode_data, DadosEpisodio.class);
+		System.out.println(episode);
 		// results.forEach(s -> System.out.println(s));
 
 		// var cafeAPI = new ConsumoAPI("https://coffee.alexflipnote.dev/");
