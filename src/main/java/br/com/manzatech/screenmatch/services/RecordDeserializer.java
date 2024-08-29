@@ -22,7 +22,7 @@ public class RecordDeserializer<T> extends JsonDeserializer<T> {
 
     private final Map<String, Object> dynamicValues = new HashMap<>();
     private final Class<T> clazz;
-    private Constructor constructor;
+    private Constructor<?> constructor;
     private ArrayList<Field> fields = new ArrayList<>();
     public RecordDeserializer(Class<T> clazz) {
         this.clazz = clazz;
