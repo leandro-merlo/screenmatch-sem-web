@@ -17,8 +17,7 @@ public class ConversorDados implements IConversorDados {
     private ObjectMapper mapper = new ObjectMapper();
     private SimpleModule module = new SimpleModule();
     private boolean wasRegistered = false;
-    public ConversorDados() {
-    }
+
 
     @Override
     public <T> T obterDados(String json, Class<T> clazz) {
@@ -46,9 +45,9 @@ public class ConversorDados implements IConversorDados {
             if (!node.isArray()) {
                 list.add(this.obterDados(node.toString(), clazz));
             } else {
-                node.forEach(el -> {
-                    list.add(this.obterDados(el.toString(), clazz));
-                });
+                node.forEach(el -> 
+                    list.add(this.obterDados(el.toString(), clazz))
+                );
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -73,7 +72,7 @@ public class ConversorDados implements IConversorDados {
         return null != node ? node.toString() : "";
     }
 
-    public void addDeserializerForClass(Class clazz, JsonDeserializer deserializer) {
+    public <T> void addDeserializerForClass(Class<T> clazz, JsonDeserializer<T> deserializer) {
         this.module.addDeserializer(clazz, deserializer);
     }
 

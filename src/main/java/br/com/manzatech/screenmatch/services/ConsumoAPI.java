@@ -48,8 +48,7 @@ public class ConsumoAPI {
             e.printStackTrace();
         }
 
-        String json = response.body();
-        return json;
+        return response.body();
     }
 
 }
