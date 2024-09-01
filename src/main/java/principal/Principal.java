@@ -16,6 +16,7 @@ import br.com.manzatech.screenmatch.models.DadosAtor;
 import br.com.manzatech.screenmatch.models.DadosEpisodio;
 import br.com.manzatech.screenmatch.models.DadosSerie;
 import br.com.manzatech.screenmatch.models.Serie;
+import br.com.manzatech.screenmatch.repositories.SerieRepository;
 import br.com.manzatech.screenmatch.services.ConsumoAPI;
 import br.com.manzatech.screenmatch.services.ConversorDados;
 import br.com.manzatech.screenmatch.services.RecordDeserializer;
@@ -33,7 +34,10 @@ public class Principal {
     @SuppressWarnings("rawtypes")
     private Map<Class, RecordDeserializer> deserializers = new HashMap<>();
 
-    public Principal() {
+    private SerieRepository serieRepository;
+
+    public Principal(SerieRepository serieRepository) {
+        this.serieRepository = serieRepository;
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Authorization", "Bearer %s".formatted(BEARER_TOKEN));
         this.consumoAPI = new ConsumoAPI(API_BASE_URL, headers);
@@ -122,17 +126,16 @@ public class Principal {
     }
     
     private void listarSeriesBuscadas() {
-        dadosSeries.stream()
-            .map(ds -> new Serie(ds))
-            .collect(Collectors.toList())
+        this.serieRepository.findAll()            
             .stream()
             .forEach(System.out::println);
     }
 
     private void buscarSeriesWeb() {
         DadosSerie d = getDadosSerie();
-        if (null != d) {            
-            dadosSeries.add(d);
+        if (null != d) {
+            Serie s = new Serie(d);
+            serieRepository.save(s);
         }
     }
 

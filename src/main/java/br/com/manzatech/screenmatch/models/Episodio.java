@@ -3,12 +3,28 @@ package br.com.manzatech.screenmatch.models;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private Integer temporada;
     private Integer numero;
     private String titulo;
     private Double avaliacao;
+    
+    @Temporal(TemporalType.DATE)
     private LocalDate dataLancamento;
 
     public Episodio(Integer temporada, DadosEpisodio dadosEpisodio) {
@@ -26,6 +42,8 @@ public class Episodio {
             this.dataLancamento = null;
         }
     }
+
+    public Episodio(){}
 
     public Integer getTemporada() {
         return temporada;
@@ -72,6 +90,41 @@ public class Episodio {
         return "Episodio [temporada=" + temporada + ", numero=" + numero + ", titulo=" + titulo + ", avaliacao="
                 + avaliacao + ", dataLancamento=" + dataLancamento + "]";
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Episodio other = (Episodio) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    
 
     
 }

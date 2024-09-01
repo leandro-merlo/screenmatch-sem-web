@@ -1,13 +1,18 @@
 package br.com.manzatech.screenmatch;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import br.com.manzatech.screenmatch.repositories.SerieRepository;
 import principal.Principal;
 
 @SpringBootApplication
 public class ScreenMatchApplication implements CommandLineRunner {
+
+	@Autowired
+    private SerieRepository serieRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScreenMatchApplication.class, args);
@@ -15,7 +20,7 @@ public class ScreenMatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Principal p = new Principal();
+		Principal p = new Principal(serieRepository);
 		p.exibeMenu();
 		// Map<String, String> headers = new HashMap<>();
 		// headers.put("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1OGQ3ZjhmY2FhOTBjYmE3N2ZkYmZhZTQ4NGQ2YTIzNCIsIm5iZiI6MTcyMzY2MjEyNy45OTIwOSwic3ViIjoiNjZiY2ZkN2NmYjA4YjhhYjYyODI1ZWRlIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.9hF5_X8dVqoKUquEGxNjurae2uUFtbmLISWj0R9QwyM");
