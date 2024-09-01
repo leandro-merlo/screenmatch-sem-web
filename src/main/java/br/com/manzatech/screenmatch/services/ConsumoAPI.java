@@ -10,13 +10,12 @@ import java.util.Map;
 
 public class ConsumoAPI {
 
-
     private String baseUrl = "";
     private Map<String, String> headers = new HashMap<>();
 
     public ConsumoAPI() {
     }
-    
+
     public ConsumoAPI(String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -31,6 +30,10 @@ public class ConsumoAPI {
     }
 
     public String obterDados(String endereco) {
+        return this.obterDados(endereco, "GET", null);
+    }
+
+    public String obterDados(String endereco, String method, String body) {
         var http = HttpClient.newHttpClient();
         var builder = HttpRequest.newBuilder()
                 .uri(URI.create("%s%s".formatted(this.baseUrl, endereco)));
@@ -39,12 +42,24 @@ public class ConsumoAPI {
                 builder.header(header.getKey(), header.getValue());
             }
         }
-        var request = builder.build();
-        HttpResponse<String> response = null;
 
+        HttpResponse<String> response = null;
+        HttpRequest request = null;
+
+        if (null != method) {
+            switch (method) {
+                case "POST":
+                    builder.POST(HttpRequest.BodyPublishers.ofString(body));
+                    break;
+                default:
+            }
+        }
+        
         try {
+            request = builder.build();
             response = http.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

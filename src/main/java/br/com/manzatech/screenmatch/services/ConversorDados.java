@@ -76,6 +76,10 @@ public class ConversorDados implements IConversorDados {
         this.module.addDeserializer(clazz, deserializer);
     }
 
+    public boolean wasRegistered() {
+        return this.wasRegistered;
+    }
+    
     public void register() {
         this.mapper.registerModule(module);
         this.wasRegistered = true;

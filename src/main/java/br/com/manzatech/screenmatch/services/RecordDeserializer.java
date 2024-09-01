@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -29,6 +30,7 @@ public class RecordDeserializer<T> extends JsonDeserializer<T> {
     private final Class<T> clazz;
     private Constructor<?> constructor;
     private ArrayList<Field> fields = new ArrayList<>();
+    private ConversorDados conversorDados = new ConversorDados();
 
     public RecordDeserializer(Class<T> clazz) {
         this.clazz = clazz;
@@ -38,6 +40,7 @@ public class RecordDeserializer<T> extends JsonDeserializer<T> {
         this.fields.addAll(Arrays.asList(this.clazz.getFields()));
         this.fields.addAll(Arrays.asList(this.clazz.getDeclaredFields()));
         this.constructor = this.clazz.getConstructors()[0];
+        this.conversorDados.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -105,15 +108,20 @@ public class RecordDeserializer<T> extends JsonDeserializer<T> {
             case "Double":
                 return node.get(searchString).asDouble();
             case "List":
-                ParameterizedType pt = (ParameterizedType) parameter.getParameterizedType();
-                TypeReference<List<DadosGenero>> tr = new TypeReference<List<DadosGenero>>() {}; 
-                if (pt.getActualTypeArguments()[0].equals(DadosGenero.class)) {
-                    return new ObjectMapper().convertValue(node.get(searchString), tr);
-                }
-                return new ObjectMapper().convertValue(node.get(searchString), Object.class);
+                Field f = this.fields.stream().filter(field -> 
+                    field.getName().equalsIgnoreCase(parameter.getName())
+                ).findFirst().orElseThrow(); 
+                ParameterizedType pt = (ParameterizedType) f.getGenericType();
+                return this.conversorDados.obterListaDados(node.get(searchString).toString()
+                    , (Class<?>)pt.getActualTypeArguments()[0]);
             default:
                 return null;
         }
+    }
+
+    @SuppressWarnings("hiding")
+    private <T> TypeReference<List<T>> getTypeReference(Class<T> clazz) {
+        return new TypeReference<List<T>>() {};
     }
 
 }
