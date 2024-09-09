@@ -9,6 +9,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DadosSerie(
         String id,
+        @JsonAlias("id") String codigoTmdb,
         @JsonAlias("name") String titulo,
         @JsonAlias("vote_average") String avaliacaoMedia,
         @JsonAlias("vote_count") Integer totalVotos,

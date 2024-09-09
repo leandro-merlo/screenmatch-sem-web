@@ -44,8 +44,8 @@ public enum Genero {
         return Arrays.stream(values()).filter(v -> v.id.equals(id)).findFirst();
     }
 
-    public static Optional<Genero> getByName(String nome) {
-        return Arrays.stream(values()).filter(v -> v.nome.equals(nome)).findFirst();
+    public static Optional<Genero> getByName(String nome) {        
+        return Arrays.stream(values()).filter(v -> v.nome.equalsIgnoreCase(nome)).findFirst();
     }    
 
     @Override

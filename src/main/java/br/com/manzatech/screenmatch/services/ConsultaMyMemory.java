@@ -23,6 +23,9 @@ public class ConsultaMyMemory {
         String toTranslate = URLEncoder.encode(texto, Charset.forName("utf-8"));
         String json = api.obterDados("get?q=%s&langpair=%s".formatted(toTranslate, langPair));
         DadosTraducao dadosTraducao = conversorDados.obterDados(json, DadosTraducao.class);
+        if (dadosTraducao.dadosResposta().textoTraduzido().startsWith("MYMEMORY WARNING")) {
+            return "%s - Texto Não traduzido".formatted(texto);            
+        }
         return dadosTraducao.dadosResposta().textoTraduzido();
     }
 }

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+import org.springframework.beans.BeanUtils;
+
 import br.com.manzatech.screenmatch.services.ConsultaMyMemory;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -31,6 +33,7 @@ public class Serie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String codigoTmdb;
     @Column(unique = true)
     private String titulo;
     private Integer totalTemporadas;
@@ -45,16 +48,17 @@ public class Serie {
     @Enumerated(EnumType.STRING)
     @Column(name = "genero")
     private List<Genero> generos = new ArrayList<>();
-    @OneToMany(targetEntity = Ator.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Ator.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "serie_id")
     private List<Ator> atores = new ArrayList<>();
-    @OneToMany(targetEntity = Episodio.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Episodio.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "serie_id")
     private List<Episodio> episodios = new ArrayList<>();
 
     public Serie() {}
 
     public Serie(DadosSerie dadosSerie) {
+        this.codigoTmdb = dadosSerie.codigoTmdb();
         this.titulo = dadosSerie.titulo();
         this.totalTemporadas = dadosSerie.totalTemporadas();
         this.avaliacaoMedia = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacaoMedia())).orElse(0);
@@ -191,6 +195,19 @@ public class Serie {
         this.episodios = episodios;
     }
 
+    public String getCodigoTmdb() {
+        return codigoTmdb;
+    }
+
+    public void setCodigoTmdb(String codigoTmdb) {
+        this.codigoTmdb = codigoTmdb;
+    }
+
+    public void update(Serie s) {
+        BeanUtils.copyProperties(s, this, "id");        
+    }
+
+    
     
     
 }

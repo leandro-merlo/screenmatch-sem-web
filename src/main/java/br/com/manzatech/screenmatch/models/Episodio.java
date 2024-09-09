@@ -3,10 +3,12 @@ package br.com.manzatech.screenmatch.models;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+import br.com.manzatech.screenmatch.services.ConsultaMyMemory;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -23,24 +25,15 @@ public class Episodio {
     private Integer numero;
     private String titulo;
     private Double avaliacao;
+
+    @ManyToOne(targetEntity = Serie.class)
+    private Serie serie;
     
     @Temporal(TemporalType.DATE)
     private LocalDate dataLancamento;
 
     public Episodio(Integer temporada, DadosEpisodio dadosEpisodio) {
-        this.temporada = temporada;
-        try {
-            this.avaliacao = Double.valueOf(dadosEpisodio.avaliacao());            
-        } catch (NumberFormatException e) {
-            this.avaliacao = 0d;
-        }
-        this.numero = dadosEpisodio.numero();
-        this.titulo = dadosEpisodio.titulo();
-        try {
-            this.dataLancamento = LocalDate.parse(dadosEpisodio.dataLancamento());            
-        } catch (DateTimeParseException e) {
-            this.dataLancamento = null;
-        }
+        this.setDadosEpisodio(temporada, dadosEpisodio);
     }
 
     public Episodio(){}
@@ -98,6 +91,27 @@ public class Episodio {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public void setDadosEpisodio(Integer temporada, DadosEpisodio dadosEpisodio) {
+        this.temporada = temporada;
+        try {
+            this.avaliacao = Double.valueOf(dadosEpisodio.avaliacao());            
+        } catch (NumberFormatException e) {
+            this.avaliacao = 0d;
+        }
+        this.numero = dadosEpisodio.numero();
+        this.titulo =  ConsultaMyMemory.obterTraducao(dadosEpisodio.titulo());
+        try {
+            this.dataLancamento = LocalDate.parse(dadosEpisodio.dataLancamento());            
+        } catch (DateTimeParseException e) {
+            this.dataLancamento = null;
+        }
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+    
 
     @Override
     public int hashCode() {
