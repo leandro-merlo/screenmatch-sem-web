@@ -4,6 +4,8 @@ import static java.util.function.Function.identity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -86,6 +88,7 @@ public class Principal {
                 8 - Filtrar séries;
                 9 - Buscar Episódio por trecho;
                 10 - Top 5 episódios por série;
+                11 - Buscar episódios a partir de uma data;
                 0 - Sair;
                 """;
         while (!option.equals("0")) {
@@ -122,6 +125,9 @@ public class Principal {
                 case "10":
                     topEpisodiosPorSerie();
                     break;
+                case "11":
+                    buscarEpisodiosAPartirdeUmaData();
+                    break;
                 case "0":
                     break;
                 default:
@@ -129,6 +135,20 @@ public class Principal {
             }
         }
         System.out.println("Tchau! Obrigado por utilizar o ScreenMatch");
+    }
+
+    private void buscarEpisodiosAPartirdeUmaData() {
+        Serie s = buscarSeriePorTitulo(false);
+        if (null == s) {
+            System.out.println("Série não encontrada!");
+        } else {
+            System.out.println("Digite o ano limite de lançamento");
+            var ano = scanner.nextInt();
+            scanner.nextLine();
+            LocalDate anoLancamento = LocalDate.of(ano, Month.JANUARY, 1);
+            List<Episodio> episodios = this.serieRepository.episodiosPorSerieAno(s, anoLancamento);
+            episodios.forEach(System.out::println);
+        }
     }
 
     private void topEpisodiosPorSerie() {

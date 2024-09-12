@@ -3,6 +3,7 @@ package br.com.manzatech.screenmatch.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,7 @@ public interface SerieRepository extends JpaRepository<Serie, Long>{
 
     @Query("select e from Serie s join s.episodios e where s = :serie order by e.avaliacao desc limit 5")
     List<Episodio> topEpisodiosPorSerie(Serie serie);
+
+    @Query("select e from Serie s join s.episodios e where s = :serie and e.dataLancamento >= :anoLancamento")
+    List<Episodio> episodiosPorSerieAno(Serie serie, LocalDate anoLancamento);
 }
