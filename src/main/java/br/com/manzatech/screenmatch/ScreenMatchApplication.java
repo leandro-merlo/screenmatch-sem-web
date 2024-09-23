@@ -9,19 +9,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import br.com.manzatech.screenmatch.principal.Principal;
 
 @SpringBootApplication
-public class ScreenMatchApplication implements CommandLineRunner {
-
-	@Autowired
-	private Principal principal;
+public class ScreenMatchApplication  {
 
 	public static void main(String[] args) {
-	 	ConfigurableApplicationContext ctx = SpringApplication.run(ScreenMatchApplication.class, args);
-		ctx.close();
-	}
-
-	@Override
-	public void run(String... args) throws Exception {
-		principal.exibeMenu();		
+	 	SpringApplication.run(ScreenMatchApplication.class, args);
 	}
 
 }

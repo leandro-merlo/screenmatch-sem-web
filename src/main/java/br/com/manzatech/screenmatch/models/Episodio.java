@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import br.com.manzatech.screenmatch.services.ConsultaMyMemory;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,7 @@ public class Episodio {
     private String titulo;
     private Double avaliacao;
 
+    @JsonBackReference()
     @ManyToOne(targetEntity = Serie.class)
     private Serie serie;
     
